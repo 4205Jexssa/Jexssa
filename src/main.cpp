@@ -9,7 +9,11 @@
 //                     Jexssa 4205J                       //
 //                      Polirobots                        //
 //                    Arquitectura #6                     //
-//                        gmaxd                           //
+//                      gmaxd, kath                       //
+////////////////////////////////////////////////////////////
+//                                //                      //
+//        Script principal        //       main.cpp       //
+//                                //                      //
 ////////////////////////////////////////////////////////////
 #include "main.h"
 #include "screen.h"
@@ -17,7 +21,7 @@
 using namespace pros;
 
 void initialize(){
-	show_logo("/usd/logo.ipros");
+	show_logo("/usd/balatro.ipros");
 	delay(5000);
 	stop_drawing();
 	screen::erase();

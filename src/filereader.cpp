@@ -1,7 +1,7 @@
 // No era mas facil hacerlo desde codigo?
 ////////////////////////////////////////////////////////////
 //                    ⚠ DISCLAIMER ⚠                     //
-// ESTA FUNCION ESTA EN ESTADO BETA, TODAVIA NO FUNCIONA  //
+//            ESTA FUNCION ESTA EN ESTADO BETA            //
 ////////////////////////////////////////////////////////////
 //       | |                          //           _____  //
 //       | | _____  _____ ___  __ _   //    _   __/ ___/  //
@@ -13,6 +13,10 @@
 //                      Polirobots                        //
 //                    Arquitectura #6                     //
 //                        gmaxd                           //
+////////////////////////////////////////////////////////////
+//     Script para lectura de     //                      //
+//      imagenes con formato      //     filereader.cpp   //
+//            .ipros              //                      //
 ////////////////////////////////////////////////////////////
 
 // File handler para leer archivos .ipros
