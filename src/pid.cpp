@@ -1,3 +1,30 @@
+#include "main.h"
+#include "pros/motors.h"
+
+struct PID {
+    // Constructores
+    double kP, kI, kD;
+    double diametroRueda;
+    double relacionEngranajes;
+
+    // Variables de operacion
+    double cmPer360 = M_PI * diametroRueda * relacionEngranajes;
+    double integral = 0;
+    double prevError = 0;
+    double integralLimit = 1000;
+    double outputLimit = 127;
+    bool signFlipReset = true;
+
+    double calcultate(){
+        double output;
+        return output; 
+    }
+
+    
+};
+
+// #include "main.h"
+
 // struct PID {
 //     double kP, kI, kD;
 //     double integral = 0;
@@ -11,16 +38,20 @@
 
 //     double update(double target, double current, double dt) {
 //         double error = target - current;
-
-//         // Integral
 //         integral += error * dt;
-//         if (fabs(error) > integralLimit) integral = 0;
-//         if (signFlipReset && (error * prevError < 0)) integral = 0;
 
-//         // Derivative sobre medición (para evitar derivative kick)
-//         double derivative = -(current - (current - error)) / dt;
+//         // Limitar el valor de la integral
+//         if (fabs(integral) > integralLimit)
+//             integral = (integral > 0 ? integralLimit : -integralLimit);
 
-//         // PID output
+//         // Reinicio de la integral si cambia el signo del error
+//         if (signFlipReset && (error * prevError < 0))
+//             integral = 0;
+
+//         // Derivada correcta del error
+//         double derivative = (error - prevError) / dt;
+
+//         // Calcular salida
 //         output = kP * error + kI * integral + kD * derivative;
 
 //         // Limitar salida
