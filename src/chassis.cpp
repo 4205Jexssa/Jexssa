@@ -19,13 +19,3 @@
 //             robot              //                      //
 ////////////////////////////////////////////////////////////
 
-#include "main.h"
-#include "pros/motors.h"
-using namespace pros;
-
-// Motor left1(1, MotorGears::blue, MotorUnits::counts);
-// Motor left2(2, MotorGears::blue, MotorUnits::counts);
-// Motor left3(3, MotorGears::blue, MotorUnits::counts);
-// Motor right1(-4, MotorGears::blue, MotorUnits::counts);
-// Motor right2(-5, MotorGears::blue, MotorUnits::counts);
-// Motor right3(-6, MotorGears::blue, MotorUnits::counts);

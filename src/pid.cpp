@@ -1,100 +1,157 @@
+// Es el sexto intento de este sistema
+////////////////////////////////////////////////////////////
+//                    ⚠ DISCLAIMER ⚠                     //
+//   ESTA FUNCION ESTA EN ESTADO BETA, CONTIENE ERRORES   //
+////////////////////////////////////////////////////////////
+//       | |                          //           _____  //
+//       | | _____  _____ ___  __ _   //    _   __/ ___/  //
+//   _   | |/ _ \ \/ / __/ __|/ _` |  //   | | / / __ \   //
+//  | |__| |  __/>  <\__ \__ \ (_| |  //   | |/ / /_/ /   //
+//   \____/ \___/_/\_\___/___/\__,_|  //   |___/\____/    //
+////////////////////////////////////////////////////////////
+//                     Jexssa 4205J                       //
+//                      Polirobots                        //
+//                    Arquitectura #6                     //
+//                        gmaxd                           //
+////////////////////////////////////////////////////////////
+//      Script para el manejo     //                      //
+//    del calculo y condiciones   //        pid.cpp       //
+//        de salida del PID       //                      //
+////////////////////////////////////////////////////////////
+
 #include "main.h"
-#include "pros/motors.h"
+#include "pid.h"
+#include <cmath>
 
-struct PID {
-    // Constructores
-    double kP, kI, kD;
-    double diametroRueda;
-    double relacionEngranajes;
+// Constructor
+PIDController::PIDController() {
+    reset();
+}
 
-    // Variables de operacion
-    double cmPer360 = M_PI * diametroRueda * relacionEngranajes;
-    double integral = 0;
-    double prevError = 0;
-    double integralLimit = 1000;
-    double outputLimit = 127;
-    bool signFlipReset = true;
+// Configurar parámetros PID
+void PIDController::setPID(double kP, double kI, double kD) {
+    config.kP = kP;
+    config.kI = kI;
+    config.kD = kD;
+}
 
-    double calcultate(){
-        double output;
-        return output; 
+// Configurar setpoint
+void PIDController::setTarget(double target) {
+    config.setpoint = target;
+}
+
+// Configurar condiciones de salida
+void PIDController::setExitCondition(double errorBounds, double exitTime) {
+    config.errorBounds = errorBounds;
+    config.exitTime = exitTime;
+}
+
+// Configurar límites de integral
+void PIDController::setIntegralLimits(double startIntegral, double maxIntegral) {
+    config.startIntegral = startIntegral;
+    config.maxIntegral = maxIntegral;
+}
+
+// Configurar límites de velocidad
+void PIDController::setSpeedLimits(double minSpeed, double maxSpeed) {
+    config.minSpeed = minSpeed;
+    config.maxSpeed = maxSpeed;
+}
+
+// Resetear PID
+void PIDController::reset() {
+    previousResult.output = 0;
+    previousResult.error = 0;
+    previousResult.integralAccumulator = 0;
+    previousResult.timeIn = 0;
+    previousResult.on = true;
+}
+
+// Calcular y obtener output
+double PIDController::update(double currentValue) {
+    previousResult = pidCalculate(previousResult, config, currentValue);
+    return previousResult.output;
+}
+
+// Verificar si el PID ya llegó al target
+bool PIDController::isSettled() {
+    return !previousResult.on;
+}
+
+// Obtener error actual
+double PIDController::getError() {
+    return previousResult.error;
+}
+
+// Obtener integral acumulada
+double PIDController::getIntegral() {
+    return previousResult.integralAccumulator;
+}
+
+// Función privada: Verificar condición de salida
+int PIDController::pidExitCondition(double time, double error, double maxtime, double inerror) {
+    bool inRange = false;
+    if (fabs(error) < inerror) {
+        inRange = true;
     }
+    if (inRange) {
+        if (time >= maxtime) {
+            return 2;
+        } else {
+            return 1;
+        }
+    } else {
+        return 0;
+    }
+}
 
+// Función privada: Calcular PID
+PIDController::PIDResult PIDController::pidCalculate(PIDResult prev, PIDConfigs values, double actual) {
+    PIDResult result;
     
-};
-
-// #include "main.h"
-
-// struct PID {
-//     double kP, kI, kD;
-//     double integral = 0;
-//     double prevError = 0;
-//     double output = 0;
-//     double integralLimit = 1000;
-//     double outputLimit = 127;
-//     bool signFlipReset = true;
-
-//     PID(double _kP, double _kI, double _kD) : kP(_kP), kI(_kI), kD(_kD) {}
-
-//     double update(double target, double current, double dt) {
-//         double error = target - current;
-//         integral += error * dt;
-
-//         // Limitar el valor de la integral
-//         if (fabs(integral) > integralLimit)
-//             integral = (integral > 0 ? integralLimit : -integralLimit);
-
-//         // Reinicio de la integral si cambia el signo del error
-//         if (signFlipReset && (error * prevError < 0))
-//             integral = 0;
-
-//         // Derivada correcta del error
-//         double derivative = (error - prevError) / dt;
-
-//         // Calcular salida
-//         output = kP * error + kI * integral + kD * derivative;
-
-//         // Limitar salida
-//         if (output > outputLimit) output = outputLimit;
-//         if (output < -outputLimit) output = -outputLimit;
-
-//         prevError = error;
-//         return output;
-//     }
-
-//     void reset() {
-//         integral = 0;
-//         prevError = 0;
-//         output = 0;
-//     }
-// };
-
-// //main.cpp
-// // pros::Motor left(1);
-// // pros::Motor right(2, true);
-
-// // PID drivePID(0.4, 0.002, 2.0);
-
-// // void moveTo(double target) {
-// //     left.tare_position();
-// //     right.tare_position();
-// //     uint32_t lastTime = pros::millis();
-
-// //     while (true) {
-// //         double current = (left.get_position() + right.get_position()) / 2.0;
-// //         double now = pros::millis();
-// //         double dt = (now - lastTime) / 1000.0;
-// //         lastTime = now;
-
-// //         double power = drivePID.update(target, current, dt);
-// //         left.move(power);
-// //         right.move(power);
-
-// //         if (fabs(target - current) < 5) break; // simple settling condition
-// //         pros::delay(10);
-// //     }
-
-// //     left.move(0);
-// //     right.move(0);
-// // }
-
+    // Inicializar valores
+    result.on = prev.on;
+    result.timeIn = prev.timeIn;
+    
+    double error = values.setpoint - actual;
+    int rsec = pidExitCondition(prev.timeIn, error, values.exitTime, values.errorBounds);
+    
+    if (rsec == 0) {
+        result.timeIn = 0;
+    } else if (rsec == 1) {
+        result.timeIn += 20;
+    } else {
+        result.on = false;
+    }
+    
+    // Calcular integral
+    double integral = prev.integralAccumulator + error;
+    if (fabs(error) <= values.startIntegral) {
+        result.integralAccumulator = integral;
+    } else {
+        result.integralAccumulator = 0;
+    }
+    
+    // Limitar integral (anti-windup)
+    if (values.maxIntegral > 0 && fabs(result.integralAccumulator) > values.maxIntegral) {
+        result.integralAccumulator = copysign(values.maxIntegral, result.integralAccumulator);
+    }
+    
+    // Derivada
+    double derivative = error - prev.error;
+    
+    // Cálculo PID
+    result.output = (error * values.kP) + (result.integralAccumulator * values.kI) + (derivative * values.kD);
+    
+    // Limitar velocidad
+    if (fabs(result.output) > values.maxSpeed) {
+        result.output = copysign(values.maxSpeed, result.output);
+    }
+    if (fabs(result.output) < values.minSpeed && result.output != 0) {
+        result.output = copysign(values.minSpeed, result.output);
+    }
+    
+    result.error = error;
+    
+    return result;
+}
