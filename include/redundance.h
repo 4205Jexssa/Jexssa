@@ -33,7 +33,7 @@ namespace Redundance {
     extern bool an_ctr;
     extern bool an_cal;
     extern bool an_opt;
-    extern bool lastime;
+    extern int lastime;
 
     // ── Declaraciones de funciones ──────────────────────────────────────────
 
@@ -91,7 +91,7 @@ namespace Redundance {
      * Punto de entrada principal: verifica errores y, si corresponde,
      * los reporta cada 5 segundos.
      */
-    void launch(
+    bool launch(
         pros::Motor& Left1,  pros::Motor& Left2,  pros::Motor& Left3,
         pros::Motor& Right1, pros::Motor& Right2, pros::Motor& Right3,
         pros::Motor& LMotor, pros::Motor& UMotor,

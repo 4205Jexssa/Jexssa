@@ -19,9 +19,8 @@
 //    en un plano bidimensional   //                      //
 ////////////////////////////////////////////////////////////
 
-#include "main.h"
 #include "geo.h"
-#include "pros/adi.h"
+#include "main.h"
 #define ps(c) pros::screen::set_pen(c)
 #define fr(x1, y1, x2, y2) pros::screen::fill_rect(x1, y1, x2, y2);
 #define dl(x1, y1, x2, y2) pros::screen::draw_line(x1, y1, x2, y2);

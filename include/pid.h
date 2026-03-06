@@ -13,13 +13,16 @@
 #ifndef PID_H
 #define PID_H
 
+#include <cstdint>
+
 class PIDController {
     private:
         struct PIDResult {
             double output = 0;
             double error = 0;
             double integralAccumulator = 0;
-            float timeIn = 0;
+            double timeIn[4] = {0, 0, 0, 0};
+            uint32_t lastTime = 0;
             bool on = true;
         };
 
@@ -36,6 +39,7 @@ class PIDController {
             bool forwards = true;
             double maxSpeed = 127;
             double minSpeed = 0;
+            bool dynamicSettle = false;
         };
 
         PIDResult previousResult;
@@ -51,7 +55,7 @@ class PIDController {
 
     public:
         // Constructor
-        PIDController();
+        PIDController(double kP, double kI, double kD, double startIntegral = 3, double maxIntegral = -1);
 
         // Configurar parámetros PID
         void setPID(double kP, double kI, double kD);
@@ -61,6 +65,9 @@ class PIDController {
 
         // Configurar condiciones de salida
         void setExitCondition(double errorBounds, double exitTime);
+
+        // Activar/desactivar settle dinámico
+        void setDynamicSettle(bool enabled);
 
         // Configurar límites de integral
         void setIntegralLimits(double startIntegral, double maxIntegral);
